@@ -6,14 +6,15 @@ from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTex
 import os
 
 # Read pdf file then maek chunks
-def make_chunks(path='./data/case_study.pdf'):
+def make_chunks(files):
     text = ""
     
     # Read pdf
-    reader = PdfReader(path)
-    # For each page, extract text and split it
-    for page in reader.pages:
-        text += page.extract_text()
+    for pdf in files:
+        reader = PdfReader(pdf)
+        # For each page, extract text and split it
+        for page in reader.pages:
+            text += page.extract_text()
 
 
     text_splitter = CharacterTextSplitter(
@@ -24,21 +25,12 @@ def make_chunks(path='./data/case_study.pdf'):
     )
 
     text_chunk = text_splitter.split_text(text)
+
     return text_chunk
 
 # Create or load FAISS DB
 def get_vector_store(texts: list) -> FAISS:
     # Use OpenAI word Embeddings
-    embeddings = OpenAIEmbeddings()
-    # If not exist
-    if not os.path.exists("./db"):
-        # Create DB
-        print("Creating...")
-        vectorstore = FAISS.from_texts(texts, embeddings)
-        vectorstore.save_local("./db")
-    else:
-        # Load
-        print("Loading...")
-        vectorstore = FAISS.load_local("./db", embeddings)
+    vectorstore = FAISS.from_texts(texts, OpenAIEmbeddings())
 
     return vectorstore

@@ -49,7 +49,7 @@ def handle_inputs(question: str) -> None:
 def main():
     load_dotenv()
 
-    st.set_page_config(page_title='Hanwha chatbot', page_icon='🤖')
+    st.set_page_config(page_title='Langchain chatbot', page_icon='🤖')
 
     st.write(css, unsafe_allow_html=True)
     
@@ -59,18 +59,24 @@ def main():
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = None
     
-    st.header('Ask any questions related to 2022 State of the Union Address')
-    question = st.text_input("Write your question")
+    st.header('Upload PDF files you want to use, and ask any questions!')
 
+    files = st.file_uploader("Upload PDF Files", type=['pdf'], accept_multiple_files=True)
+
+    if files:
+        with st.spinner("Processing..."):
+            # Load texts from pdf
+            chunks = make_chunks(files)
+            # Create vectore stores
+            vector_store = get_vector_store(chunks)
+            st.write("Sucess! Now start ask questions.")
+            # Start session
+            st.session_state.conversation =  get_conversation_chain(vector_store)    
+
+    question = st.text_input("Write your question")
     # If the question exists
     if question:
-        handle_inputs(question)
-    # Load texts from pdf
-    texts = make_chunks()
-    # load or create vector store
-    vector_store = get_vector_store(texts)
-    # Start session
-    st.session_state.conversation =  get_conversation_chain(vector_store)
+        handle_inputs(question)    
 
 
 
