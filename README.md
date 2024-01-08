@@ -1,6 +1,6 @@
 # Langchain-chatbot
 
-## Project Overview
+## Overview
 
 This project aims to create a conversational chatbot using Langchain. It provides appropriate information given queries based on the user’s provided multiple PDF files.
 
