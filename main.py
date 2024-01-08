@@ -69,7 +69,7 @@ def main():
             chunks = make_chunks(files)
             # Create vectore stores
             vector_store = get_vector_store(chunks)
-            st.write("Sucess! Now start ask questions.")
+            st.write("Sucess! Now start to ask questions.")
             # Start session
             st.session_state.conversation =  get_conversation_chain(vector_store)    
 
